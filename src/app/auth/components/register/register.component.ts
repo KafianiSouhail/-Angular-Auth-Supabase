@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MyRoutes } from '../../types/interfaces/my-routes.enum';
+import { MyRoles } from '../../types/interfaces/my-roles.enum';
 
 @Component({
   selector: 'app-register',
@@ -25,22 +26,26 @@ export class RegisterComponent implements OnInit {
   initializeForm():FormGroup{
     return this.formBuilder.nonNullable.group({
       email:['',[Validators.required]],
-      password:['',[Validators.required]]
+      password:['',[Validators.required]],
+      role:[MyRoles.USER, Validators.required]
     })
   }
 
   onSubmit():void{
     if(this.form.invalid) return;
 
-    const {email,password} = this.form.getRawValue();
+    const {email,password,role} = this.form.getRawValue();
     this.authService.register(email,password).subscribe(response => {
       if(response.error){        
         this.errorMsg = response.error.message;
       }
       else{
         this.errorMsg = '';
-        this.form.reset();
-        this.router.navigate(['auth',MyRoutes.PROFILE])
+        this.authService.setProfile(role).subscribe(response => {
+          this.form.reset();
+          this.router.navigate(['auth',MyRoutes.PROFILE])
+        })
+       
       }
     })
   }
