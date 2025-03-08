@@ -1,0 +1,9 @@
+<div class="header-container d-flex justify-content-end align-items-center column-gap-4">
+  @if (currentUser()===null) {
+    <a [routerLink]="['auth',myRoutes.LOGIN]" class="btn btn-primary">Login</a>
+  <a [routerLink]="['auth',myRoutes.REGISTER]" class="btn btn-success">Register</a>
+  }
+  @if(currentUser()){
+    <a [routerLink]="['auth',myRoutes.LOGIN]" class="btn btn-danger" (click)="onLogout()">Logout</a>
+  }
+</div>
